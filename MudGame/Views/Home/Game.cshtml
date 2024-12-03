@@ -1,0 +1,10 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@if (SignInManager.IsSignedIn(User)){
+    <h1 class="text-center">Welcome to the Game</h1>
+}
+else{
+    <h1 class="text-center">Please log in</h1>
+}

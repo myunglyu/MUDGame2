@@ -31,6 +31,6 @@ body {
 }
 
 #messagesList{
-  max-height: calc(75vh - 60px);
+  height: calc(80vh - 60px);
   overflow-y: auto;
 }

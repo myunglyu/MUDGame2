@@ -7,23 +7,35 @@
         <div class="col-1">@User.Identity?.Name<input type="hidden" id="userInput" value="@User.Identity?.Name"/></div>
         <div class="col-5"></div>
     </div> *@
-    <div class="row p-1">
-        <div class="col-1">Message</div>
-        <div class="col-5"><input type="text" class="w-100" id="messageInput" /></div>
-    </div>
-    <div class="row p-1">
-        <div class="col-6 text-end">
-            <input type="button" id="sendButton" value="Send Message" />
-        </div>
-    </div>
-    <div class="row p-1">
-        <div class="col-6">
-            <hr />
-        </div>
-    </div>
-    <div class="row p-1">
-        <div class="col-6">
-            <ul id="messagesList"></ul>
+    <div class="row">
+        @* <div class="col-6">
+            <partial name="Game">
+        </div> *@
+        <div class="col-12">
+            <div class="row p-1">
+                <div class="col-12">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <ul id="messagesList"></ul>
+                    }
+                    else
+                    {
+                        <h1 class="text-center">Please log in</h1>
+                    }
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-12">
+                    <hr />
+                </div>
+            </div>
+            <div class="row p-1">
+                @* <div class="col-1">Message</div> *@
+                <div class="col-12 text-center">
+                    <input type="text" class="w-75" id="messageInput" />
+                    <input type="button" id="sendButton" value="Send" />
+                </div>
+            </div>
         </div>
     </div>
 </div>
