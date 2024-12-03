@@ -14,7 +14,7 @@ html {
 
 html {
   position: relative;
-  min-height: 100%;
+  height: 100%;
 }
 
 body {
@@ -28,4 +28,9 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+#messagesList{
+  max-height: calc(75vh - 60px);
+  overflow-y: auto;
 }

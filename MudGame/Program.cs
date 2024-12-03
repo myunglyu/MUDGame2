@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudGame.Data;
-using SignalRChat.Hubs;
+using MudGame.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
