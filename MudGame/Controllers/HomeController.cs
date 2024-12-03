@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using MudGame.Models;
 using MudGame.Data;
 using SQLitePCL;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MudGame.Controllers;
 
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;

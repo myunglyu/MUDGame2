@@ -12,16 +12,9 @@
             <partial name="Game">
         </div> *@
         <div class="col-12">
-            <div class="row p-1">
-                <div class="col-12">
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <ul id="messagesList"></ul>
-                    }
-                    else
-                    {
-                        <h1 class="text-center">Please log in</h1>
-                    }
+            <div class="row p-1" style="height: calc(100vh - 250px);">
+                <div class="col-12 ">
+                    <ul id="messagesList"></ul>
                 </div>
             </div>
             <div class="row p-1">
