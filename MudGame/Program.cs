@@ -44,7 +44,6 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = false;
 });
 
-
 builder.Services.AddSignalR();
 
 var app = builder.Build();
