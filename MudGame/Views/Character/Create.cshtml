@@ -1,0 +1,69 @@
+@* Views/Character/Create.cshtml *@
+@model CharacterViewModel
+@{
+    ViewData["Title"] = "Create New Character";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">@ViewData["Title"]</h2>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm("Create", "Character", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Name, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Class, new { @class = "form-label" })
+                            @Html.DropDownListFor(m => m.Class, 
+                                new SelectList(new[] { "Warrior", "Mage", "Rogue" }), 
+                                "Select a class...",
+                                new { @class = "form-select" })
+                            @Html.ValidationMessageFor(m => m.Class, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    @Html.LabelFor(m => m.Strength, new { @class = "form-label" })
+                                    @Html.TextBoxFor(m => m.Strength, new { @class = "form-control", type = "number", min = "1", max = "20" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    @Html.LabelFor(m => m.Intelligence, new { @class = "form-label" })
+                                    @Html.TextBoxFor(m => m.Intelligence, new { @class = "form-control", type = "number", min = "1", max = "20" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    @Html.LabelFor(m => m.Dexterity, new { @class = "form-label" })
+                                    @Html.TextBoxFor(m => m.Dexterity, new { @class = "form-control", type = "number", min = "1", max = "20" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Create Character</button>
+                            @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-secondary" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
