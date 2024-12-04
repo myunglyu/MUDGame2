@@ -19,6 +19,17 @@ namespace MudGame.Controllers
             _characterService = characterService;
             _userManager = userManager;
         }
+        public async Task<IActionResult> Index()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var characters = await _characterService.GetCharactersAsync(user);
+            return View(characters);
+        }
 
         [HttpGet]
         public IActionResult Create()
@@ -57,20 +68,9 @@ namespace MudGame.Controllers
                 return View(model);
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
-        // public async Task<IActionResult> Index()
-        // {
-        //     var user = await _userManager.GetUserAsync(User);
-        //     if (user == null)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     var characters = await _characterService.GetCharactersAsync(user);
-        //     return View(characters);
-        // }
     }
 }
 

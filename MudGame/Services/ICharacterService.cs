@@ -7,6 +7,6 @@ namespace MudGame.Services;
 public interface ICharacterService
 {
     Task<bool> CreateCharacterAsync(IdentityUser user, Character newCharacter);
-    // Task<Character[]> GetCharactersAsync(IdentityUser user);
+    Task<Character[]> GetCharactersAsync(IdentityUser user);
     // Task DeleteCharacterAsync(IdentityUser user, Character character);
 }

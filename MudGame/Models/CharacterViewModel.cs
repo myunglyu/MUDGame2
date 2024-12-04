@@ -7,7 +7,7 @@ namespace MudGame.Models
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
-
+        [Required]
         public string Class { get; set; }
 
         [Range(1, 20)]

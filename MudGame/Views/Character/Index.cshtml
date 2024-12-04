@@ -1,1 +1,62 @@
-Character Index.cshtml
+@model IEnumerable<MudGame.Models.Character>
+
+@{
+    ViewData["Title"] = "Character Selection";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Select Your Character</h2>
+
+    <div class="row">
+        <div class="col-12 mb-3 text-end">
+            <a asp-controller="Character" asp-action="Create" class="btn btn-primary">
+                Create New Character
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var character in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">@character.Name</h5>
+                            <p class="card-text">
+                                <strong>Class:</strong> @character.Class<br>
+                                <strong>Stats:</strong><br>
+                                STR: @character.Strength<br>
+                                DEX: @character.Dexterity<br>
+                                INT: @character.Intelligence<br>
+                            </p>
+                            <form asp-controller="Character" asp-action="Select" method="post">
+                                <input type="hidden" name="characterId" value="@character.Id" />
+                                <button type="submit" class="btn btn-success w-100">Select Character</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center">
+                <p>No characters found. Create your first character to begin!</p>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+</style>

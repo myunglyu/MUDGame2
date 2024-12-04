@@ -26,6 +26,12 @@ public class CharacterService : ICharacterService
         var saveResult = await _context.SaveChangesAsync();
         return saveResult > 0;
     }
+    
+    public async Task<Character[]> GetCharactersAsync(IdentityUser user)
+    {
+        var characters = await _context.Characters.Where(x => x.UserId == user.Id).ToArrayAsync();
+        return characters;
+    }
 
     // public async Task<bool> CreateCharacterAsync(IdentityUser user, Character newCharacter)
     // {
@@ -38,11 +44,6 @@ public class CharacterService : ICharacterService
     //     return saveResult == 1;
     // }
 
-    // public async Task<Character[]> GetCharactersAsync(IdentityUser user)
-    // {
-    //     var characters = await _context.Characters.Where(x => x.User == user).ToArrayAsync();
-    //     return characters;
-    // }
 
     // public Task DeleteCharacterAsync(IdentityUser user, Character character)
     // {
