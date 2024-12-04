@@ -7,4 +7,5 @@ namespace MudGame.Data;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
 {
     public required DbSet<Character> Characters { get; set; }
+    public required DbSet<Monster> Monsters { get; set; }
 }
