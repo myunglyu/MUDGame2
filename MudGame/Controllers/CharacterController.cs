@@ -56,6 +56,10 @@ namespace MudGame.Controllers
             {
                 Name = model.Name,
                 Class = model.Class,
+                Level = 1,
+                Experience = 0,
+                HitPoints = 10,
+                MagicPoints = 10,
                 Strength = model.Strength,
                 Intelligence = model.Intelligence,
                 Dexterity = model.Dexterity
@@ -71,6 +75,17 @@ namespace MudGame.Controllers
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Select(Guid characterId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var result = _characterService.SelectCharacterAsync(user, characterId);
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
 

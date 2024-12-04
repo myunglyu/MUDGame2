@@ -31,7 +31,7 @@
                                 DEX: @character.Dexterity<br>
                                 INT: @character.Intelligence<br>
                             </p>
-                            <form asp-controller="Character" asp-action="Select" method="post">
+                            <form asp-controller="Game" asp-action="Index" method="post">
                                 <input type="hidden" name="characterId" value="@character.Id" />
                                 <button type="submit" class="btn btn-success w-100">Select Character</button>
                             </form>

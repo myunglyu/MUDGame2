@@ -9,14 +9,13 @@ public class CharacterService : ICharacterService
 {
     // Dependency injection
     private readonly ApplicationDbContext _context;
-
     public CharacterService(ApplicationDbContext context)
     {
         _context = context;
     }
     // Dependency injection
 
-        public async Task<bool> CreateCharacterAsync(IdentityUser user, Character character)
+    public async Task<bool> CreateCharacterAsync(IdentityUser user, Character character)
     {
         character.Id = Guid.NewGuid();
         character.UserId = user.Id;
@@ -31,6 +30,15 @@ public class CharacterService : ICharacterService
     {
         var characters = await _context.Characters.Where(x => x.UserId == user.Id).ToArrayAsync();
         return characters;
+    }
+
+    public async Task<Character> SelectCharacterAsync(IdentityUser user, Guid characterId)
+    {
+        var character = await _context.Characters
+            .FirstOrDefaultAsync(x => x.UserId == user.Id && x.Id == characterId) 
+            ?? throw new InvalidOperationException("Character not found");
+
+        return character;
     }
 
     // public async Task<bool> CreateCharacterAsync(IdentityUser user, Character newCharacter)

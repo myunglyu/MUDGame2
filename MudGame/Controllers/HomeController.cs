@@ -5,6 +5,8 @@ using MudGame.Data;
 using SQLitePCL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using MudGame.Services;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 
 namespace MudGame.Controllers;
@@ -14,18 +16,28 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly ApplicationDbContext _context;
-    private readonly UserManager<IdentityUser> _usermanager;
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly ICharacterService _characterService;
 
-    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, UserManager<IdentityUser> usermanager)
+    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, UserManager<IdentityUser> userManager, ICharacterService characterService)
     {
         _logger = logger;
         _context = context;
-        _usermanager = usermanager;
+        _userManager = userManager;
+        _characterService = characterService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+        else
+        {
+            return RedirectToAction("Index", "Character");
+        }
     }
 
     public IActionResult Privacy()
