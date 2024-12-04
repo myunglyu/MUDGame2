@@ -1,40 +1,51 @@
-// using Microsoft.AspNetCore.Identity;
-// using MudGame.Models;
-// using MudGame.Data;
-// using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using MudGame.Models;
+using MudGame.Data;
+using Microsoft.EntityFrameworkCore;
 
-// namespace MudGame.Services;
+namespace MudGame.Services;
 
-// public class CharacterService : ICharacterService
-// {
-//     // Dependency injection
-//     private readonly ApplicationDbContext _context;
+public class CharacterService : ICharacterService
+{
+    // Dependency injection
+    private readonly ApplicationDbContext _context;
 
-//     public CharacterService(ApplicationDbContext context)
-//     {
-//         _context = context;
-//     }
-//     // Dependency injection
+    public CharacterService(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+    // Dependency injection
 
-//     public async Task<bool> CreateCharacterAsync(IdentityUser user, Character newCharacter)
-//     {
-//         newCharacter.Id = Guid.NewGuid();
-//         newCharacter.User = user;
+        public async Task<bool> CreateCharacterAsync(IdentityUser user, Character character)
+    {
+        character.Id = Guid.NewGuid();
+        character.UserId = user.Id;
+        character.User = user;
 
-//         _context.Characters.Add(newCharacter);
+        _context.Characters.Add(character);
+        var saveResult = await _context.SaveChangesAsync();
+        return saveResult > 0;
+    }
 
-//         var saveResult = await _context.SaveChangesAsync();
-//         return saveResult == 1;
-//     }
+    // public async Task<bool> CreateCharacterAsync(IdentityUser user, Character newCharacter)
+    // {
+    //     newCharacter.Id = Guid.NewGuid();
+    //     newCharacter.User = user;
 
-//     public async Task<Character[]> GetCharactersAsync(IdentityUser user)
-//     {
-//         var characters = await _context.Characters.Where(x => x.User == user).ToArrayAsync();
-//         return characters;
-//     }
+    //     _context.Characters.Add(newCharacter);
 
-//     public Task DeleteCharacterAsync(IdentityUser user, Character character)
-//     {
-//         throw new NotImplementedException();
-//     }
-// }
+    //     var saveResult = await _context.SaveChangesAsync();
+    //     return saveResult == 1;
+    // }
+
+    // public async Task<Character[]> GetCharactersAsync(IdentityUser user)
+    // {
+    //     var characters = await _context.Characters.Where(x => x.User == user).ToArrayAsync();
+    //     return characters;
+    // }
+
+    // public Task DeleteCharacterAsync(IdentityUser user, Character character)
+    // {
+    //     throw new NotImplementedException();
+    // }
+}

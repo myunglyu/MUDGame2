@@ -1,27 +1,76 @@
 // Controllers/CharacterController.cs
 using Microsoft.AspNetCore.Mvc;
 using MudGame.Models;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using MudGame.Services;
 
 namespace MudGame.Controllers
 {
+    [Authorize]
     public class CharacterController : Controller
     {
+        private readonly ICharacterService _characterService;
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public CharacterController(ICharacterService characterService, UserManager<IdentityUser> userManager)
+        {
+            _characterService = characterService;
+            _userManager = userManager;
+        }
+
+        [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            return View(new CharacterViewModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CharacterViewModel model)
+        public async Task<IActionResult> Create(CharacterViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // TODO: Save character
-                return RedirectToAction(nameof(Index));
+                return View(model);
             }
-            return View(model);
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var character = new Character
+            {
+                Name = model.Name,
+                Class = model.Class,
+                Strength = model.Strength,
+                Intelligence = model.Intelligence,
+                Dexterity = model.Dexterity
+            };
+
+            var result = await _characterService.CreateCharacterAsync(user, character);
+            if (!result)
+            {
+                ModelState.AddModelError(string.Empty, "Error creating character");
+                return View(model);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
+
+        // public async Task<IActionResult> Index()
+        // {
+        //     var user = await _userManager.GetUserAsync(User);
+        //     if (user == null)
+        //     {
+        //         return NotFound();
+        //     }
+
+        //     var characters = await _characterService.GetCharactersAsync(user);
+        //     return View(characters);
+        // }
     }
 }
 

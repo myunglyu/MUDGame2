@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MudGame.Data;
 using MudGame.Hubs;
 using MudGame.Models;
+using MudGame.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => {
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<ICharacterService, CharacterService>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {

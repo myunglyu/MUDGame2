@@ -6,6 +6,7 @@ public class Character
 {
     public Guid Id { get; set; }
     public IdentityUser User { get; set; }
+    public string UserId { get; set; }
     public string Name { get; set; }
     public string Class { get; set; }
     public int Strength { get; set; }
