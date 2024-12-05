@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using MudGame.Services;
 using Microsoft.AspNetCore.SignalR;
 using MudGame.Hubs;
+using System.Security.Claims;
 
 namespace MudGame.Controllers;
 
@@ -19,23 +20,24 @@ public class GameController : Controller
     private readonly UserManager<IdentityUser> _userManager;
     private readonly ICharacterService _characterService;
     private readonly IHubContext<ChatHub> _hubContext;
-    private readonly IGameStateService _gameStateService;
+    private readonly IGameService _gameService;
 
     public GameController(ILogger<GameController> logger,
         ApplicationDbContext context, 
         UserManager<IdentityUser> userManager, 
         ICharacterService characterService,
         IHubContext<ChatHub> hubContext,
-        IGameStateService gameStateService)
+        IGameService gameService)
     {
         _logger = logger;
         _context = context;
         _userManager = userManager;
         _characterService = characterService;
         _hubContext = hubContext;
-        _gameStateService = gameStateService;
+        _gameService = gameService;
     }
 
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Index(Guid characterId)
     {
         var user = await _userManager.GetUserAsync(User);
@@ -49,7 +51,7 @@ public class GameController : Controller
             return RedirectToAction("Index", "Character");
         }
 
-        var character = await _characterService.SelectCharacterAsync(user, characterId);
+        var character = await _characterService.GetCharacterAsync(user, characterId);
         if (character == null)
         {
             // Log for debugging
@@ -67,17 +69,35 @@ public class GameController : Controller
 
     public async Task SpawnMonster()
     {
-        var monster = await _gameStateService.SpawnMonsterAsync();
+        var monster = _gameService.SpawnMonster();
         if (monster != null)
         {
-            await SendGameMessage($"A {monster.Name} appears! (Level {monster.Level})");
+            var spawnedMonster = await monster;
+            await SendGameMessage($"A {spawnedMonster.Name} appears! (Level {spawnedMonster.Level})");
         }
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> StartEncounter()
     {
         await SpawnMonster();
         return Ok();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [HttpPost]
+    public async Task GameCommand(ClaimsPrincipal userPrincipal, string characterId, string command)
+    {   
+        var user = await _userManager.GetUserAsync(userPrincipal);
+        if (user == null)
+        {
+            throw new UnauthorizedAccessException("User not found");
+        }
+
+        var character = await _characterService.GetCharacterAsync(user, Guid.Parse(characterId));
+        var result = await _gameService.ProcessCommand(character, command);
+        await SendGameMessage("<System> " + result);
     }
 }

@@ -4,6 +4,7 @@ using MudGame.Data;
 using MudGame.Hubs;
 using MudGame.Models;
 using MudGame.Services;
+using MudGame.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +23,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => {
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<ICharacterService, CharacterService>();
-builder.Services.AddScoped<IGameStateService, GameStateService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<GameController>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {

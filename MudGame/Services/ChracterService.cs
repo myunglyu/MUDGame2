@@ -32,12 +32,11 @@ public class CharacterService : ICharacterService
         return characters;
     }
 
-    public async Task<Character> SelectCharacterAsync(IdentityUser user, Guid characterId)
+    public async Task<Character> GetCharacterAsync(IdentityUser user, Guid characterId)
     {
         var character = await _context.Characters
             .FirstOrDefaultAsync(x => x.UserId == user.Id && x.Id == characterId) 
             ?? throw new InvalidOperationException("Character not found");
-
         return character;
     }
 

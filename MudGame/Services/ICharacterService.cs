@@ -8,6 +8,6 @@ public interface ICharacterService
 {
     Task<bool> CreateCharacterAsync(IdentityUser user, Character newCharacter);
     Task<Character[]> GetCharactersAsync(IdentityUser user);
-    Task<Character> SelectCharacterAsync(IdentityUser user, Guid characterId);
+    Task<Character> GetCharacterAsync(IdentityUser user, Guid characterId);
     // Task DeleteCharacterAsync(IdentityUser user, Character character);
 }

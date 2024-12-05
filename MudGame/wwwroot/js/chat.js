@@ -23,8 +23,13 @@ connection.start().then (function () {
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
     var message = document.getElementById("messageInput").value;
-    var name = document.getElementById("characterName").textContent;
-    if (message) {
+    if (message[0] == "/") {
+        var characterId = document.getElementById("characterId").value;
+        connection.invoke("SendGameCommand", characterId, message).catch(function (err) {
+            return console.error(err.toString());
+        })
+    } else if (message) {
+        var name = document.getElementById("characterName").textContent;
         connection.invoke("SendMessage", name, message).catch(function (err) {
         return console.error(err.toString());
     })

@@ -22,7 +22,8 @@
             <div class="row p-1">
                 <div class="col-12">
                     <hr />
-                    <p class="text-center"><span id="characterName">@Model.Name</span> | Level: @Model.Level | Experience: @Model.Experience <button id="spawnButton" class="btn btn-primary">Look for Monsters</button></p>
+                    <p class="text-center"><span id="characterName">@Model.Name</span> | Level: @Model.Level | Experience: @Model.Experience
+                    <button id="spawnButton" class="btn btn-primary">Look for Monsters</button></p>
                     @section Scripts {
                         <script>
                             document.getElementById("spawnButton").onclick = function() {
@@ -36,6 +37,7 @@
                 @* <div class="col-1">Message</div> *@
                 <div class="col-12 text-center">
                     <input type="text" class="w-75" id="messageInput" />
+                    <input type="hidden" id="characterId" value="@Model.Id">
                     <input type="button" id="sendButton" value="Send" />
                 </div>
             </div>
