@@ -78,7 +78,6 @@ public class GameController : Controller
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> StartEncounter()
     {
         await SpawnMonster();
@@ -87,7 +86,6 @@ public class GameController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [HttpPost]
     public async Task GameCommand(ClaimsPrincipal userPrincipal, string characterId, string command)
     {   
         var user = await _userManager.GetUserAsync(userPrincipal);
