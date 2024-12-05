@@ -8,6 +8,13 @@
     <h2 class="text-center mb-4">Select Your Character</h2>
 
     <div class="row">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show col-6 offset-3" role="alert">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
         <div class="col-12 mb-3 text-end">
             <a asp-controller="Character" asp-action="Create" class="btn btn-primary">
                 Create New Character
@@ -60,3 +67,4 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 </style>
+

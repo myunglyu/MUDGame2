@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using MudGame.Services;
+using SQLitePCL;
+using MudGame.Data;
 
 namespace MudGame.Controllers
 {
@@ -13,11 +15,13 @@ namespace MudGame.Controllers
     {
         private readonly ICharacterService _characterService;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ApplicationDbContext _context;
 
-        public CharacterController(ICharacterService characterService, UserManager<IdentityUser> userManager)
+        public CharacterController(ICharacterService characterService, UserManager<IdentityUser> userManager, ApplicationDbContext context)
         {
             _characterService = characterService;
             _userManager = userManager;
+            _context = context;
         }
         public async Task<IActionResult> Index()
         {
@@ -34,7 +38,20 @@ namespace MudGame.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View(new CharacterViewModel());
+            var userId = _userManager.GetUserId(User);
+            if (userId == null)
+            {
+                return NotFound();
+            }
+            int count = _context.Characters.Count(x => x.UserId.ToString().Equals(userId));
+            System.Console.WriteLine("Character Count: ", count);
+            if (count >= 6)
+            {
+                // Add message to TempData
+                TempData["ErrorMessage"] = "You have reached the maximum limit of 6 characters.";
+                return RedirectToAction("Index", "Home");
+            }
+            else { return View(new CharacterViewModel()); }
         }
 
         [HttpPost]
@@ -75,17 +92,17 @@ namespace MudGame.Controllers
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Select(Guid characterId)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var result = _characterService.SelectCharacterAsync(user, characterId);
-            if (user == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-            return RedirectToAction("Index", "Home");
-        }
+        // [HttpPost]
+        // public async Task<IActionResult> Select(Guid characterId)
+        // {
+        //     var user = await _userManager.GetUserAsync(User);
+        //     var result = _characterService.SelectCharacterAsync(user, characterId);
+        //     if (user == null)
+        //     {
+        //         return RedirectToAction("Login", "Account");
+        //     }
+        //     return RedirectToAction("Index", "Home");
+        // }
     }
 }
 

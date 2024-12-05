@@ -22,6 +22,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => {
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<ICharacterService, CharacterService>();
+builder.Services.AddScoped<IGameStateService, GameStateService>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -77,5 +78,6 @@ app.MapRazorPages()
    .WithStaticAssets();
 
 app.MapHub<ChatHub>("/chatHub");
+// app.MapHub<GameHub>("/gameHub");
 
 app.Run();

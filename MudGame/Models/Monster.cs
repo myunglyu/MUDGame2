@@ -1,4 +1,5 @@
 using Microsoft.Identity.Client.Extensibility;
+using MudGame.Data;
 
 namespace MudGame.Models;
 

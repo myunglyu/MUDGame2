@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using MudGame.Controllers;
 using MudGame.Data;
+using MudGame.Models;
+using MudGame.Services;
 
 namespace MudGame.Hubs;
 
@@ -16,20 +18,51 @@ public interface IChatClient
 public class ChatHub : Hub<IChatClient>
 {
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly ICharacterService _characterService;
+    private static readonly Dictionary<string, String> ActiveCharacter = new();
+    private readonly IGameService _gameService;
 
     // Inject UserManager into the ChatHub to handle current user information
-    public ChatHub(UserManager<IdentityUser> userManager)
+    public ChatHub(UserManager<IdentityUser> userManager, ICharacterService characterService)
     {
         _userManager = userManager;
+        _characterService = characterService;
     }
-    public Task SendMessage(string message)
+    public Task SendMessage(string name, string message)
     {
         if (Context.User == null)
         {
             return Task.CompletedTask;
         } else {
             var userName = _userManager.GetUserName(Context.User);
-            return Clients.All.ReceiveMessage(userName, message);
+            var chatName = $"{name}({userName})";
+            return Clients.All.ReceiveMessage(chatName, message);
         }
     }
+
+    public async Task StoreCharacterInfo(Guid characterId)
+    {
+        var user = await _userManager.GetUserAsync(Context.User);
+        var character = await _characterService.SelectCharacterAsync(user, characterId);
+        if (!string.IsNullOrEmpty(user.Id))
+        {
+            ActiveCharacter[user.Id] = character.Name;
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{user.Id}");
+            await ((IClientProxy)Clients.Group($"user_{user.Id}")).SendAsync("CharacterUpdated", character);
+            System.Console.WriteLine($"Character info stored for {user.Id}");
+        }
+        System.Console.WriteLine("StoreCharacterInfo called");
+        System.Console.WriteLine(user.Id, ActiveCharacter[user.Id]);
+    }
+
+    public async Task GetCharacterInfo()
+    {
+        var user = await _userManager.GetUserAsync(Context.User);
+        if (!string.IsNullOrEmpty(user.Id) && ActiveCharacter.TryGetValue(user.Id, out var character))
+        {
+            await ((IClientProxy)Clients.Caller).SendAsync("CharacterUpdated", character);
+        }
+    }
+
+
 }   

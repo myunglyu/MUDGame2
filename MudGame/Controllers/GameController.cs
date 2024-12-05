@@ -6,8 +6,8 @@ using SQLitePCL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using MudGame.Services;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
+using Microsoft.AspNetCore.SignalR;
+using MudGame.Hubs;
 
 namespace MudGame.Controllers;
 
@@ -18,13 +18,22 @@ public class GameController : Controller
     private readonly ApplicationDbContext _context;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly ICharacterService _characterService;
+    private readonly IHubContext<ChatHub> _hubContext;
+    private readonly IGameStateService _gameStateService;
 
-    public GameController(ILogger<GameController> logger, ApplicationDbContext context, UserManager<IdentityUser> userManager, ICharacterService characterService)
+    public GameController(ILogger<GameController> logger,
+        ApplicationDbContext context, 
+        UserManager<IdentityUser> userManager, 
+        ICharacterService characterService,
+        IHubContext<ChatHub> hubContext,
+        IGameStateService gameStateService)
     {
         _logger = logger;
         _context = context;
         _userManager = userManager;
         _characterService = characterService;
+        _hubContext = hubContext;
+        _gameStateService = gameStateService;
     }
 
     public async Task<IActionResult> Index(Guid characterId)
@@ -49,5 +58,26 @@ public class GameController : Controller
         }
 
         return View(character);
+    }
+
+    public async Task SendGameMessage(string message)
+    {
+        await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Game", message);
+    }
+
+    public async Task SpawnMonster()
+    {
+        var monster = await _gameStateService.SpawnMonsterAsync();
+        if (monster != null)
+        {
+            await SendGameMessage($"A {monster.Name} appears! (Level {monster.Level})");
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> StartEncounter()
+    {
+        await SpawnMonster();
+        return Ok();
     }
 }
