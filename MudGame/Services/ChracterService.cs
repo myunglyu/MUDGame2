@@ -18,8 +18,12 @@ public class CharacterService : ICharacterService
     public async Task<bool> CreateCharacterAsync(IdentityUser user, Character character)
     {
         character.Id = Guid.NewGuid();
-        character.UserId = user.Id;
         character.User = user;
+        character.UserId = user.Id;
+        character.Level = 1;
+        character.Experience = 0;
+        character.HitPoints = 10;
+        character.MagicPoints = 10;
 
         _context.Characters.Add(character);
         var saveResult = await _context.SaveChangesAsync();

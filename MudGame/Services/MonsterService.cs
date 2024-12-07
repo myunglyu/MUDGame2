@@ -3,7 +3,7 @@ using MudGame.Data;
 
 namespace MudGame.Services;
 
-public class MonsterService
+public class MonsterService : IMonsterService
 {
     // Dependency injection
     private readonly ApplicationDbContext _context;
@@ -13,4 +13,19 @@ public class MonsterService
     }
     // Dependency injection
 
+    public async Task<bool> CreateMonsterAsync(Monster monster)
+    {
+        monster.Id = Guid.NewGuid();
+
+        _context.Monsters.Add(monster);
+        var saveResult = await _context.SaveChangesAsync();
+        return saveResult > 0;
+    }
+    
+    public Task<Monster> SpawnMonster()
+    {
+        var monsters = _context.Monsters.ToArray();
+        var monster = monsters[new Random().Next(0, monsters.Length)];
+        return Task.FromResult(monster);
+    }
 }

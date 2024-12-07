@@ -24,17 +24,6 @@ public class GameService : IGameService
     {
         throw new NotImplementedException();
     }
-    public Task<Monster> SpawnMonster()
-    {
-        var monster = new Monster
-        {
-            Id = Guid.NewGuid(),
-            Name = "Goblin",
-            HitPoints = 10,
-            Level = 1
-        };
-        return Task.FromResult(monster);
-    }
 
     public async Task<string> ProcessCommand(Character character, string command)
     {

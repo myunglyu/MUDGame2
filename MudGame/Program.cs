@@ -24,6 +24,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IMonsterService, MonsterService>();
 builder.Services.AddScoped<GameController>();
 
 builder.Services.Configure<IdentityOptions>(options =>

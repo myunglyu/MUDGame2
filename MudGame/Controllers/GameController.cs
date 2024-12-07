@@ -21,13 +21,15 @@ public class GameController : Controller
     private readonly ICharacterService _characterService;
     private readonly IHubContext<ChatHub> _hubContext;
     private readonly IGameService _gameService;
+    private readonly IMonsterService _monsterService;
 
     public GameController(ILogger<GameController> logger,
         ApplicationDbContext context, 
         UserManager<IdentityUser> userManager, 
         ICharacterService characterService,
         IHubContext<ChatHub> hubContext,
-        IGameService gameService)
+        IGameService gameService,
+        IMonsterService monsterService)
     {
         _logger = logger;
         _context = context;
@@ -35,6 +37,7 @@ public class GameController : Controller
         _characterService = characterService;
         _hubContext = hubContext;
         _gameService = gameService;
+        _monsterService = monsterService;
     }
 
     [ValidateAntiForgeryToken]
@@ -69,7 +72,7 @@ public class GameController : Controller
 
     public async Task SpawnMonster()
     {
-        var monster = _gameService.SpawnMonster();
+        var monster = _monsterService.SpawnMonster();
         if (monster != null)
         {
             var spawnedMonster = await monster;
@@ -77,12 +80,12 @@ public class GameController : Controller
         }
     }
 
-    [HttpPost]
-    public async Task<IActionResult> StartEncounter()
-    {
-        await SpawnMonster();
-        return Ok();
-    }
+    // [HttpPost]
+    // public async Task<IActionResult> StartEncounter()
+    // {
+    //     await SpawnMonster();
+    //     return Ok();
+    // }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -98,4 +101,5 @@ public class GameController : Controller
         var result = await _gameService.ProcessCommand(character, command);
         await SendGameMessage("<System> " + result);
     }
+
 }

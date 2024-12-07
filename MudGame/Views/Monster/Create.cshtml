@@ -1,0 +1,28 @@
+@model Monster
+
+@{
+    ViewData["Title"] = "Create New Monster";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">@ViewData["Title"]</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Monster" asp-action="Create" method="post">
+                        <input type="text" asp-for="Name" class="form-control my-2" placeholder="Name" required />
+                        <input type="number" asp-for="Level" class="form-control my-2" placeholder="Level" />
+                        <input type="number" asp-for="HitPoints" class="form-control my-2" placeholder="Hit Points" />
+                        <input type="number" asp-for="Attack" class="form-control my-2" placeholder="Attack" />
+                        <input type="number" asp-for="Defense" class="form-control my-2" placeholder="Defense" />
+                        <input type="number" asp-for="Speed" class="form-control my-2" placeholder="Speed" />
+                        <button type="submit" class="btn btn-primary w-100 my-2">Create Monster</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

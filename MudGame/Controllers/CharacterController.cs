@@ -1,4 +1,3 @@
-// Controllers/CharacterController.cs
 using Microsoft.AspNetCore.Mvc;
 using MudGame.Models;
 using System.Threading.Tasks;
@@ -31,8 +30,10 @@ namespace MudGame.Controllers
                 return NotFound();
             }
 
-            var characters = await _characterService.GetCharactersAsync(user);
-            return View(characters);
+            var model = new CharacterViewModel{
+                Characters = await _characterService.GetCharactersAsync(user)
+            };
+            return View(model);
         }
 
         [HttpGet]
@@ -51,45 +52,27 @@ namespace MudGame.Controllers
                 TempData["ErrorMessage"] = "You have reached the maximum limit of 6 characters.";
                 return RedirectToAction("Index", "Home");
             }
-            else { return View(new CharacterViewModel()); }
+            else { return View(new Character()); }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CharacterViewModel model)
+        public async Task<IActionResult> Create(Character model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound();
             }
 
-            var character = new Character
-            {
-                Name = model.Name,
-                Class = model.Class,
-                Level = 1,
-                Experience = 0,
-                HitPoints = 10,
-                MagicPoints = 10,
-                Strength = model.Strength,
-                Intelligence = model.Intelligence,
-                Dexterity = model.Dexterity
-            };
-
-            var result = await _characterService.CreateCharacterAsync(user, character);
+            var result = await _characterService.CreateCharacterAsync(user, model);
             if (!result)
             {
                 ModelState.AddModelError(string.Empty, "Error creating character");
                 return View(model);
             }
 
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(GameController.Index), "Home");
         }
 
         // [HttpPost]

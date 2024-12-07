@@ -1,11 +1,10 @@
-@model CharacterViewModel
 
 @{
-    ViewData["Title"] = "Character Selection";
+    ViewData["Title"] = "Monster List";
 }
 
 <div class="container mt-4">
-    <h2 class="text-center mb-4">Select Your Character</h2>
+    <h2 class="text-center mb-4">Monster List</h2>
 
     <div class="row">
         @if (TempData["ErrorMessage"] != null)
@@ -16,8 +15,8 @@
             </div>
         }
         <div class="col-12 mb-3 text-end">
-            <a asp-controller="Character" asp-action="Create" class="btn btn-primary">
-                Create New Character
+            <a asp-controller="Monster" asp-action="Create" class="btn btn-primary">
+                Create New Monsters
             </a>
         </div>
     </div>
@@ -25,23 +24,24 @@
     <div class="row">
         @if (Model != null)
         {
-            @foreach (var character in Model.Characters)
+            @foreach (var monster in Model.Monsters)
             {
                 <div class="col-md-4 mb-4">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">@character.Name</h5>
-                            <p class="card-text">Speed
-                                <strong>Class:</strong> @character.Class<br>
-                                <strong>Stats:</strong><br>
-                                STR: @character.Strength<br>
-                                DEX: @character.Dexterity<br>
-                                INT: @character.Intelligence<br>
+                            <h5 class="card-title">@monster.Name</h5>
+                            <p class="card-text">
+                                <strong>Level:</strong> @monster.Level<br>
+                                <strong>Stats</strong><br>
+                                Attack: @monster.Attack<br>
+                                Defense: @monster.Defense<br>
+                                Speed: @monster.Speed<br>
+
                             </p>
-                            <form asp-controller="Game" asp-action="Index" method="post">
+                            @* <form asp-controller="Game" asp-action="Index" method="post">
                                 <input type="hidden" name="characterId" value="@character.Id" />
                                 <button type="submit" class="btn btn-success w-100">Select Character</button>
-                            </form>
+                            </form> *@
                         </div>
                     </div>
                 </div>
@@ -50,7 +50,7 @@
         else
         {
             <div class="col-12 text-center">
-                <p>No characters found. Create your first character to begin!</p>
+                <p>No Monsters found</p>
             </div>
         }
     </div>

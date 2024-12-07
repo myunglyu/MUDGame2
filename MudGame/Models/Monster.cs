@@ -11,5 +11,5 @@ public class Monster {
     public int Attack { get; set; }
     public int Defense { get; set; }
     public int Speed { get; set; }
-    public string DropItems { get; set; }
+    public string? DropItems { get; set; }
 }
