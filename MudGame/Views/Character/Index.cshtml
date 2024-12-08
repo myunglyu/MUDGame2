@@ -31,16 +31,17 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">@character.Name</h5>
-                            <p class="card-text">Speed
+                            <p class="card-text">
                                 <strong>Class:</strong> @character.Class<br>
                                 <strong>Stats:</strong><br>
                                 STR: @character.Strength<br>
                                 DEX: @character.Dexterity<br>
                                 INT: @character.Intelligence<br>
                             </p>
-                            <form asp-controller="Game" asp-action="Index" method="post">
+                            <form method="post">
                                 <input type="hidden" name="characterId" value="@character.Id" />
-                                <button type="submit" class="btn btn-success w-100">Select Character</button>
+                                <button asp-controller="Game" asp-action="Index" class="btn btn-success w-100 my-3">Select Character</button>
+                                <button asp-controller="Character" asp-action="Delete" asp-route-id="@character.Id" class="btn btn-danger w-100 my-3">Delete Character</button>
                             </form>
                         </div>
                     </div>

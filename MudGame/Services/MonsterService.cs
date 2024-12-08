@@ -28,4 +28,18 @@ public class MonsterService : IMonsterService
         var monster = monsters[new Random().Next(0, monsters.Length)];
         return Task.FromResult(monster);
     }
+
+    public async Task<bool> EditMonsterAsync(Monster monster)
+    {
+        _context.Monsters.Update(monster);
+        var result = await _context.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> DeleteMonsterAsync(Monster monster)
+    {
+        _context.Monsters.Remove(monster);
+        var result = await _context.SaveChangesAsync();
+        return result > 0;
+    }
 }

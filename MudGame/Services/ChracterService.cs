@@ -44,20 +44,14 @@ public class CharacterService : ICharacterService
         return character;
     }
 
-    // public async Task<bool> CreateCharacterAsync(IdentityUser user, Character newCharacter)
-    // {
-    //     newCharacter.Id = Guid.NewGuid();
-    //     newCharacter.User = user;
-
-    //     _context.Characters.Add(newCharacter);
-
-    //     var saveResult = await _context.SaveChangesAsync();
-    //     return saveResult == 1;
-    // }
-
-
-    // public Task DeleteCharacterAsync(IdentityUser user, Character character)
-    // {
-    //     throw new NotImplementedException();
-    // }
+    public async Task<bool> DeleteCharacterAsync(IdentityUser user, Character character)
+    {
+        var result = 0;
+        if (character.UserId == user.Id)
+        {
+            _context.Characters.Remove(character);
+            result = await _context.SaveChangesAsync();
+        }
+        return result > 0;
+    }
 }

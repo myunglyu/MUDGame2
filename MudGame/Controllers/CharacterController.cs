@@ -75,17 +75,30 @@ namespace MudGame.Controllers
             return RedirectToAction(nameof(GameController.Index), "Home");
         }
 
-        // [HttpPost]
-        // public async Task<IActionResult> Select(Guid characterId)
-        // {
-        //     var user = await _userManager.GetUserAsync(User);
-        //     var result = _characterService.SelectCharacterAsync(user, characterId);
-        //     if (user == null)
-        //     {
-        //         return RedirectToAction("Login", "Account");
-        //     }
-        //     return RedirectToAction("Index", "Home");
-        // }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var character = await _characterService.GetCharacterAsync(user, id);
+            if (character == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _characterService.DeleteCharacterAsync(user, character);
+            if (!result)
+            {
+                TempData["ErrorMessage"] = "Unable to delete the character. Please try again later.";
+                return View(character);
+            }
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
 

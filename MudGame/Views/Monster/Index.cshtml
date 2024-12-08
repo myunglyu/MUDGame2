@@ -33,15 +33,15 @@
                             <p class="card-text">
                                 <strong>Level:</strong> @monster.Level<br>
                                 <strong>Stats</strong><br>
+                                HP: @monster.HitPoints<br>
                                 Attack: @monster.Attack<br>
                                 Defense: @monster.Defense<br>
                                 Speed: @monster.Speed<br>
-
                             </p>
-                            @* <form asp-controller="Game" asp-action="Index" method="post">
-                                <input type="hidden" name="characterId" value="@character.Id" />
-                                <button type="submit" class="btn btn-success w-100">Select Character</button>
-                            </form> *@
+                            <a href="~/Monster/Edit/@monster.Id"><button class="btn btn-warning w-100 my-3">Edit</button></a>
+                            <form method="post">
+                                <button asp-controller="Monster" asp-action="Delete" asp-route-id="@monster.Id" class="btn btn-danger w-100 my-3">Delete Monster</button>
+                            </form>
                         </div>
                     </div>
                 </div>

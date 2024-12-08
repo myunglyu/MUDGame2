@@ -67,7 +67,7 @@ public class GameController : Controller
 
     public async Task SendGameMessage(string message)
     {
-        await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Game", message);
+        await _hubContext.Clients.All.SendAsync("ReceiveMessage", "<System>", message);
     }
 
     public async Task SpawnMonster()
@@ -99,7 +99,7 @@ public class GameController : Controller
 
         var character = await _characterService.GetCharacterAsync(user, Guid.Parse(characterId));
         var result = await _gameService.ProcessCommand(character, command);
-        await SendGameMessage("<System> " + result);
+        await SendGameMessage(result);
     }
 
 }

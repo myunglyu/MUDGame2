@@ -19,7 +19,6 @@ public class ChatHub : Hub<IChatClient>
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly ICharacterService _characterService;
-    private readonly IGameService _gameService;
     private readonly GameController _gameController;
 
     // Inject UserManager into the ChatHub to handle current user information
@@ -44,7 +43,10 @@ public class ChatHub : Hub<IChatClient>
 
     public async Task SendGameCommand(string characterId, string message)
     {
-        await _gameController.GameCommand(Context.User, characterId, message);
+        if (Context.User != null)
+        {
+            await _gameController.GameCommand(Context.User, characterId, message);
+        }
     }
 
 

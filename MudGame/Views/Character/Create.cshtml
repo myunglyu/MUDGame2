@@ -13,16 +13,25 @@
                 </div>
                 <div class="card-body">
                     <form asp-controller="Character" asp-action="Create" method="post">
-                        <input type="text" asp-for="Name" class="form-control my-2" placeholder="Name" required />
+                        <div class="row">
+                        <label asp-for="Name" class="col-8">Name
+                        <input type="text" asp-for="Name" class="form-control my-2" placeholder="Name" required /></label>
+                        <label asp-for="Class" class="col-4">Class
                         <select asp-for="Class" class="form-control my-2" required>
                             <option value="">Select a Class</option>
                             <option value="Warrior">Warrior</option>
                             <option value="Mage">Mage</option>
                             <option value="Rogue">Rogue</option>
-                        </select>
-                        <input type="number" asp-for="Strength" class="form-control my-2" placeholder="Strength" />
-                        <input type="number" asp-for="Intelligence" class="form-control my-2" placeholder="Intelligence" />
-                        <input type="number" asp-for="Dexterity" class="form-control my-2" placeholder="Dexterity" />
+                        </select></label>
+                        </div>
+                        <div class="row">
+                        <label asp-for="Strength" class="col-4">Strength
+                        <input type="number" asp-for="Strength" class="form-control my-2" placeholder="Strength" /></label>
+                        <label asp-for="Intelligence" class="col-4">Intelligence
+                        <input type="number" asp-for="Intelligence" class="form-control my-2" placeholder="Intelligence" /></label>
+                        <label asp-for="Dexterity" class="col-4">Dexterity
+                        <input type="number" asp-for="Dexterity" class="form-control my-2" placeholder="Dexterity" /></label>
+                        </div>
                         <button type="submit" class="btn btn-primary w-100 my-2">Create</button>
                     </form>
                 </div>

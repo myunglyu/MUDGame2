@@ -1,7 +1,7 @@
 @model Monster
 
 @{
-    ViewData["Title"] = "Create New Monster";
+    ViewData["Title"] = "Update Monster";
 }
 
 <div class="container mt-4">
@@ -12,7 +12,7 @@
                     <h2 class="text-center">@ViewData["Title"]</h2>
                 </div>
                 <div class="card-body">
-                    <form asp-controller="Monster" asp-action="Create" method="post">
+                    <form asp-controller="Monster" asp-action="Edit" method="post">
                         <div class="row">
                         <label asp-for="Name" class="col-6">Name
                         <input type="text" asp-for="Name" class="form-control my-2" placeholder="Name" required /></label>
@@ -29,7 +29,7 @@
                         <label asp-for="Speed" class="col-4">Speed
                         <input type="number" asp-for="Speed" class="form-control my-2" placeholder="Speed" /></label>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 my-2">Create Monster</button>
+                        <button type="submit" class="btn btn-primary w-100 my-2">Update</button>
                     </form>
                 </div>
             </div>

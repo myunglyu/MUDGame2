@@ -6,4 +6,6 @@ public interface IMonsterService
 {
     public Task<bool> CreateMonsterAsync(Monster monster);
     public Task<Monster> SpawnMonster();
+    public Task<bool> EditMonsterAsync(Monster monster);
+    public Task<bool> DeleteMonsterAsync(Monster monster);
 }
