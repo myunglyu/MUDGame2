@@ -97,7 +97,6 @@ public class GameController : Controller
         var _character = character;
         var _command = command.Split(" ");
         if (_command[0] == "/attack"){
-            System.Console.WriteLine($"{_character.Name} is attacking {_command[1]}");
             var monster = await _context.Monsters.FirstOrDefaultAsync(x => x.Name.ToLower() == _command[1].ToLower());
             if (monster != null){
                 var result = await _gameService.BattleAsync(_character, monster);

@@ -28,7 +28,7 @@ public class GameService : IGameService
 
     public async Task<bool> BattleAsync(Character character, Monster monster)
     {
-        await SendGameMessage($"{character.Name} is battling {monster.Name}");
+        await SendGameMessage($"{character.Name} attacked {monster.Name}");
         var characterAttack = character.Strength + character.Level - monster.Defense;
         if (characterAttack < 1)
         {
