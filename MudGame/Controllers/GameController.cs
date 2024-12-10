@@ -9,6 +9,9 @@ using MudGame.Services;
 using Microsoft.AspNetCore.SignalR;
 using MudGame.Hubs;
 using System.Security.Claims;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 
 namespace MudGame.Controllers;
 
@@ -21,7 +24,6 @@ public class GameController : Controller
     private readonly ICharacterService _characterService;
     private readonly IHubContext<ChatHub> _hubContext;
     private readonly IGameService _gameService;
-    private readonly IMonsterService _monsterService;
 
     public GameController(ILogger<GameController> logger,
         ApplicationDbContext context, 
@@ -37,7 +39,6 @@ public class GameController : Controller
         _characterService = characterService;
         _hubContext = hubContext;
         _gameService = gameService;
-        _monsterService = monsterService;
     }
 
     [ValidateAntiForgeryToken]
@@ -72,20 +73,9 @@ public class GameController : Controller
 
     public async Task SpawnMonster()
     {
-        var monster = _monsterService.SpawnMonster();
-        if (monster != null)
-        {
-            var spawnedMonster = await monster;
-            await SendGameMessage($"A {spawnedMonster.Name} appears! (Level {spawnedMonster.Level})");
-        }
+        var monster = await _gameService.SpawnMonster();
+        await SendGameMessage($"{monster.Name} has entered the room!");
     }
-
-    // [HttpPost]
-    // public async Task<IActionResult> StartEncounter()
-    // {
-    //     await SpawnMonster();
-    //     return Ok();
-    // }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -98,8 +88,31 @@ public class GameController : Controller
         }
 
         var character = await _characterService.GetCharacterAsync(user, Guid.Parse(characterId));
-        var result = await _gameService.ProcessCommand(character, command);
+        var result = await ProcessCommand(character, command);
         await SendGameMessage(result);
     }
 
+    public async Task<string> ProcessCommand(Character character, string command)
+    {
+        var _character = character;
+        var _command = command.Split(" ");
+        if (_command[0] == "/attack"){
+            System.Console.WriteLine($"{_character.Name} is attacking {_command[1]}");
+            var monster = await _context.Monsters.FirstOrDefaultAsync(x => x.Name.ToLower() == _command[1].ToLower());
+            if (monster != null){
+                var result = await _gameService.BattleAsync(_character, monster);
+                if (result){
+                    return $"{_character.Name} defeated the {monster.Name}!";
+                }
+                else{
+                    return $"{_character.Name} was defeated by the {monster.Name}!";
+                }
+            }
+            else{
+                return "Monster not found!";
+            }
+        } else {
+            return "Invalid command!";
+        }
+    }
 }

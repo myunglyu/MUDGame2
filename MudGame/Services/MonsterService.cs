@@ -22,13 +22,6 @@ public class MonsterService : IMonsterService
         return saveResult > 0;
     }
     
-    public Task<Monster> SpawnMonster()
-    {
-        var monsters = _context.Monsters.ToArray();
-        var monster = monsters[new Random().Next(0, monsters.Length)];
-        return Task.FromResult(monster);
-    }
-
     public async Task<bool> EditMonsterAsync(Monster monster)
     {
         _context.Monsters.Update(monster);

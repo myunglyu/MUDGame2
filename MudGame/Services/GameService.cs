@@ -50,32 +50,11 @@ public class GameService : IGameService
         }
         return characterHPLeft > monsterHPleft;
     }
-        public Task<Monster[]> GetActiveMonsters()
-    {
-        throw new NotImplementedException();
-    }
 
-    public async Task<string> ProcessCommand(Character character, string command)
+    public async Task<Monster> SpawnMonster()
     {
-        var _character = character;
-        var _command = command.Split(" ");
-        if (_command[0] == "/attack"){
-            System.Console.WriteLine($"{_character.Name} is attacking {_command[1]}");
-            var monster = await _context.Monsters.FirstOrDefaultAsync(x => x.Name.ToLower() == _command[1].ToLower());
-            if (monster != null){
-                var result = await BattleAsync(_character, monster);
-                if (result){
-                    return $"{_character.Name} defeated the {monster.Name}!";
-                }
-                else{
-                    return $"{_character.Name} was defeated by the {monster.Name}!";
-                }
-            }
-            else{
-                return "Monster not found!";
-            }
-        } else {
-            return "Invalid command!";
-        }
+        var monsters = await _context.Monsters.ToArrayAsync();
+        var monster = monsters[new Random().Next(0, monsters.Length)];
+        return monster;
     }
 }
