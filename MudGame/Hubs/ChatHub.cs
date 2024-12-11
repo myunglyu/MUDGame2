@@ -43,15 +43,33 @@ public class ChatHub : Hub<IChatClient>
 
     public async Task SendGameCommand(string characterId, string message, string roomId)
     {
+        var result = "Invalid command";
         if (Context.User != null)
         {
-            await _gameController.GameCommand(Context.User, characterId, message, roomId);
+            result = await _gameController.GameCommand(Context.User, characterId, message, roomId);
         }
+        await Clients.Caller.ReceiveMessage(Context.User.Identity.Name, result);
+    }
+
+    public async Task ReceiveGameMessage(string user, string message)
+    {
+        await Clients.Caller.ReceiveMessage(user, message);
     }
 
     public async Task SpawnMonster(string roomId)
     {
         await _gameController.SpawnMonster(roomId);
+    }
+
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        if (Context.User != null)
+        {
+            var userName = _userManager.GetUserName(Context.User);
+            await Clients.All.ReceiveMessage("<System>", $"{userName} has left the chat.");
+        }
+
+        await base.OnDisconnectedAsync(exception);
     }
 
     // public async Task StoreCharacterInfo(Guid characterId)

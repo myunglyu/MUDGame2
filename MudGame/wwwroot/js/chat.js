@@ -17,6 +17,11 @@ connection.on("ReceiveMessage", function (user, message) {
 
 connection.start().then (function () {
     document.getElementById("sendButton").disabled = false;
+    var name = document.getElementById("characterName").textContent;
+    var characterId = document.getElementById("characterId").value;
+    var roomId = document.getElementById("roomId").value;
+    connection.invoke("SendMessage", "System", `${name} connected to game.`);
+    connection.invoke("SendGameCommand", characterId, "/move", roomId);
 }).catch(function (err) {
     return console.error(err.toString());
 });

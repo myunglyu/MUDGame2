@@ -78,4 +78,52 @@ public class GameService : IGameService
         await _inMemoryDbContext.SaveChangesAsync();
         return monster;
     }
+
+    public async Task<string> GetRoomInfoAsync(Room room)
+    {
+        var monsters = room.Monsters != null 
+            ? await _context.Monsters.Where(x => room.Monsters.Contains(x.Id)).ToArrayAsync() 
+            : Array.Empty<Monster>();
+        var monsterNames = monsters.Select(x => x.Name).Humanize();
+
+        var players = room.Characters != null 
+            ? await _context.Characters.Where(x => room.Characters.Contains(x.Id)).ToArrayAsync() 
+            : Array.Empty<Character>();
+        var playerNames = players.Select(x => x.Name).Humanize();
+        return $"You are in {room.Name}. You see [{monsterNames}] and [{playerNames}] in the room";
+    }
+
+    public async Task<string> MoveAsync(Character character, Room room)
+    {
+        room.Characters.Add(character.Id);
+        if (await _inMemoryDbContext.SaveChangesAsync() > 0) return $"{character.Name} is in {room.Name}";
+        else return "Failed to move";
+
+    }
+
+    public async Task<string> MoveAsync(Character character, string direction, Room room)
+    {
+        // var directions = new Dictionary<string, string>
+        // {
+        //     { "north", room.North },
+        //     { "south", room.South },
+        //     { "east", room.East },
+        //     { "west", room.West }
+        // };
+        // if (directions[direction] == null)
+        // {
+        //     return "You can't go that way!";
+        // }
+        // var newRoom = await _inMemoryDbContext.Rooms.FindAsync(Guid.Parse(directions[direction]));
+        // if (newRoom == null)
+        // {
+        //     return "Room not found!";
+        // }
+        // room.Characters.Remove(character.Id);
+        // newRoom.Characters ??= new List<Guid>();
+        // newRoom.Characters.Add(character.Id);
+        // await _inMemoryDbContext.SaveChangesAsync();
+        // return $"You moved {direction}";
+        throw new NotImplementedException();
+    }
 }

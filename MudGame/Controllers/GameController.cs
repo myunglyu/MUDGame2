@@ -12,6 +12,7 @@ using System.Security.Claims;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace MudGame.Controllers;
 
@@ -46,7 +47,7 @@ public class GameController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        return RedirectToAction("Home", "Index");
+        return RedirectToAction("Index", "Character");
     }
 
     [HttpPost]
@@ -84,7 +85,7 @@ public class GameController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task GameCommand(ClaimsPrincipal userPrincipal, string characterId, string command, string roomId)
+    public async Task<string> GameCommand(ClaimsPrincipal userPrincipal, string characterId, string command, string roomId)
     {   
         var user = await _userManager.GetUserAsync(userPrincipal);
         if (user == null)
@@ -94,22 +95,33 @@ public class GameController : Controller
 
         var character = await _characterService.GetCharacterAsync(user, Guid.Parse(characterId));
         var room = await _inMemoryDbContext.Rooms.FindAsync(Guid.Parse(roomId));
-        var result = await ProcessCommand(character, command, room);
-        await SendGameMessage(result);
+        return await ProcessCommand(character, command, room);
     }
 
     public async Task<string> ProcessCommand(Character character, string command, Room room)
     {
-        string[] processedCommand = command.Split(" ");
+        string[] processedCommand = command.ToLower().Split(" ");
         if (processedCommand[0] == "/attack"){
-            if (processedCommand[1] != null){
-                var result = await _gameService.BattleAsync(character, processedCommand[1], room);
-                return result;
+            if (processedCommand.Length == 2){
+                return await _gameService.BattleAsync(character, processedCommand[1], room);
             }
             else{
                 return "Monster not found!";
             }
-        } else {
+        }
+        if (processedCommand[0] == "/here"){
+            return await _gameService.GetRoomInfoAsync(room);
+        }
+        if (processedCommand[0] == "/move"){
+            if (processedCommand.Length == 1){
+                System.Console.WriteLine($"{character.Name} is moving to {room.Name}");
+                return await _gameService.MoveAsync(character, room);
+            }
+            else{
+                return await _gameService.MoveAsync(character, processedCommand[1], room);
+            }
+        }
+        else {
             return "Invalid command!";
         }
     }
