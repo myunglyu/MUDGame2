@@ -114,7 +114,6 @@ public class GameController : Controller
         }
         if (processedCommand[0] == "/move"){
             if (processedCommand.Length == 1){
-                System.Console.WriteLine($"{character.Name} is moving to {room.Name}");
                 return await _gameService.MoveAsync(character, room);
             }
             else{
