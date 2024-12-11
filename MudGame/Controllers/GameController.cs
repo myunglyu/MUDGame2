@@ -20,6 +20,7 @@ public class GameController : Controller
 {
     private readonly ILogger<GameController> _logger;
     private readonly ApplicationDbContext _context;
+    private readonly InMemoryDbContext _inMemoryDbContext;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly ICharacterService _characterService;
     private readonly IHubContext<ChatHub> _hubContext;
@@ -31,7 +32,7 @@ public class GameController : Controller
         ICharacterService characterService,
         IHubContext<ChatHub> hubContext,
         IGameService gameService,
-        IMonsterService monsterService)
+        InMemoryDbContext inMemoryDbContext)
     {
         _logger = logger;
         _context = context;
@@ -39,8 +40,16 @@ public class GameController : Controller
         _characterService = characterService;
         _hubContext = hubContext;
         _gameService = gameService;
+        _inMemoryDbContext = inMemoryDbContext;
     }
 
+    [HttpGet]
+    public IActionResult Index()
+    {
+        return RedirectToAction("Home", "Index");
+    }
+
+    [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Index(Guid characterId)
     {
@@ -48,11 +57,6 @@ public class GameController : Controller
         if (user == null)
         {
             return RedirectToAction("Login", "Account");
-        }
-
-        if (characterId == null)
-        {
-            return RedirectToAction("Index", "Character");
         }
 
         var character = await _characterService.GetCharacterAsync(user, characterId);
@@ -71,15 +75,16 @@ public class GameController : Controller
         await _hubContext.Clients.All.SendAsync("ReceiveMessage", "<System>", message);
     }
 
-    public async Task SpawnMonster()
+    [HttpPost]
+    public async Task SpawnMonster(string roomId)
     {
-        var monster = await _gameService.SpawnMonster();
+        var monster = await _gameService.SpawnMonster(Guid.Parse(roomId));
         await SendGameMessage($"{monster.Name} has entered the room!");
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task GameCommand(ClaimsPrincipal userPrincipal, string characterId, string command)
+    public async Task GameCommand(ClaimsPrincipal userPrincipal, string characterId, string command, string roomId)
     {   
         var user = await _userManager.GetUserAsync(userPrincipal);
         if (user == null)
@@ -88,24 +93,18 @@ public class GameController : Controller
         }
 
         var character = await _characterService.GetCharacterAsync(user, Guid.Parse(characterId));
-        var result = await ProcessCommand(character, command);
+        var room = await _inMemoryDbContext.Rooms.FindAsync(Guid.Parse(roomId));
+        var result = await ProcessCommand(character, command, room);
         await SendGameMessage(result);
     }
 
-    public async Task<string> ProcessCommand(Character character, string command)
+    public async Task<string> ProcessCommand(Character character, string command, Room room)
     {
-        var _character = character;
-        var _command = command.Split(" ");
-        if (_command[0] == "/attack"){
-            var monster = await _context.Monsters.FirstOrDefaultAsync(x => x.Name.ToLower() == _command[1].ToLower());
-            if (monster != null){
-                var result = await _gameService.BattleAsync(_character, monster);
-                if (result){
-                    return $"{_character.Name} defeated the {monster.Name}!";
-                }
-                else{
-                    return $"{_character.Name} was defeated by the {monster.Name}!";
-                }
+        string[] processedCommand = command.Split(" ");
+        if (processedCommand[0] == "/attack"){
+            if (processedCommand[1] != null){
+                var result = await _gameService.BattleAsync(character, processedCommand[1], room);
+                return result;
             }
             else{
                 return "Monster not found!";

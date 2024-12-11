@@ -25,7 +25,8 @@ document.getElementById("sendButton").addEventListener("click", function (event)
     var message = document.getElementById("messageInput").value;
     if (message[0] == "/") {
         var characterId = document.getElementById("characterId").value;
-        connection.invoke("SendGameCommand", characterId, message).catch(function (err) {
+        var roomId = document.getElementById("roomId").value;
+        connection.invoke("SendGameCommand", characterId, message, roomId).catch(function (err) {
             return console.error(err.toString());
         })
     } else if (message) {

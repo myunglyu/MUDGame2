@@ -26,9 +26,16 @@
                     <button id="spawnButton" class="btn btn-primary">Look for Monsters</button></p>
                     @section Scripts {
                         <script>
-                            document.getElementById("spawnButton").onclick = function() {
-                                fetch('/Game/SpawnMonster', { method: 'POST' });
-                            };
+                            document.getElementById('spawnButton').addEventListener('click', async () => {
+                                const roomId = 'F47AC10B-58CC-4372-A567-0E02B2C3D479';
+                                await connection.invoke("SpawnMonster", roomId).catch(function (err) {
+                                    console.error(err.toString());
+                                });
+                            });
+                            @* document.getElementById("spawnButton").onclick = function() {
+                                const roomId = 'F47AC10B-58CC-4372-A567-0E02B2C3D479';
+                                fetch(`/Game/SpawnMonster/?roomId=${roomId}`, { method: 'POST' });
+                            }; *@
                         </script>
                     }
                 </div>
@@ -38,6 +45,7 @@
                 <div class="col-12 text-center">
                     <input type="text" class="w-75" id="messageInput" />
                     <input type="hidden" id="characterId" value="@Model.Id">
+                    <input type="hidden" id="roomId" value="F47AC10B-58CC-4372-A567-0E02B2C3D479">
                     <input type="button" id="sendButton" value="Send" />
                 </div>
             </div>

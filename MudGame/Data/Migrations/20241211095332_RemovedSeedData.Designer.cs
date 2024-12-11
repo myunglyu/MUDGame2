@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MudGame.Data;
 
@@ -10,9 +11,11 @@ using MudGame.Data;
 namespace MudGame.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241211095332_RemovedSeedData")]
+    partial class RemovedSeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -318,17 +321,6 @@ namespace MudGame.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Rooms");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("f47ac10b-58cc-4372-a567-0e02b2c3d479"),
-                            Characters = "[]",
-                            Description = "Welcome to the Town Square. You see a fountain in the center of the square.",
-                            Exits = "North,South,East,West",
-                            Monsters = "[\"1888A3D0-F507-4901-AD1D-0E163CDF60A9\",\"1888A3D0-F507-4901-AD1D-0E163CDF60A9\"]",
-                            Name = "Town Square"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

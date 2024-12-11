@@ -41,14 +41,18 @@ public class ChatHub : Hub<IChatClient>
         }
     }
 
-    public async Task SendGameCommand(string characterId, string message)
+    public async Task SendGameCommand(string characterId, string message, string roomId)
     {
         if (Context.User != null)
         {
-            await _gameController.GameCommand(Context.User, characterId, message);
+            await _gameController.GameCommand(Context.User, characterId, message, roomId);
         }
     }
 
+    public async Task SpawnMonster(string roomId)
+    {
+        await _gameController.SpawnMonster(roomId);
+    }
 
     // public async Task StoreCharacterInfo(Guid characterId)
     // {
