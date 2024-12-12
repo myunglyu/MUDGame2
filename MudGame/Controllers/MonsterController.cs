@@ -39,20 +39,20 @@ public class MonsterController : Controller
         return View(new Monster());
     }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Monster monster)
-    {
-        var result = await _monsterService.CreateMonsterAsync(monster);
+    // [HttpPost]
+    // [ValidateAntiForgeryToken]
+    // public async Task<IActionResult> Create(Monster monster)
+    // {
+    //     var result = await _monsterService.CreateMonsterAsync(monster);
 
-        if (!result)
-        {
-            ModelState.AddModelError(string.Empty, "Error creating character");
-            return View(monster);
-        }
+    //     if (!result)
+    //     {
+    //         ModelState.AddModelError(string.Empty, "Error creating character");
+    //         return View(monster);
+    //     }
 
-        return RedirectToAction("Index");
-    }
+    //     return RedirectToAction("Index");
+    // }
 
     [HttpGet]
     public async Task<IActionResult> Edit(Guid id)
