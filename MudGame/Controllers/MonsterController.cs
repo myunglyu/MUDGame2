@@ -39,10 +39,10 @@ public class MonsterController : Controller
         return View(new Monster());
     }
 
-    // [HttpPost]
-    // [ValidateAntiForgeryToken]
-    // public async Task<IActionResult> Create(Monster monster)
-    // {
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(Monster monster)
+    {
     //     var result = await _monsterService.CreateMonsterAsync(monster);
 
     //     if (!result)
@@ -51,8 +51,8 @@ public class MonsterController : Controller
     //         return View(monster);
     //     }
 
-    //     return RedirectToAction("Index");
-    // }
+        return RedirectToAction("Index");
+    }
 
     [HttpGet]
     public async Task<IActionResult> Edit(Guid id)
@@ -70,13 +70,13 @@ public class MonsterController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Monster monster)
     {
-        var result = await _monsterService.EditMonsterAsync(monster);
+        // var result = await _monsterService.EditMonsterAsync(monster);
 
-        if (!result)
-        {
-            ModelState.AddModelError(string.Empty, "Error updating monster");
-            return View(monster);
-        }
+        // if (!result)
+        // {
+        //     ModelState.AddModelError(string.Empty, "Error updating monster");
+        //     return View(monster);
+        // }
 
         return RedirectToAction("Index");
     }
@@ -85,18 +85,18 @@ public class MonsterController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var monster = await _context.Monsters.FindAsync(id);
-        if (monster == null)
-        {
-            return NotFound();
-        }
+        // var monster = await _context.Monsters.FindAsync(id);
+        // if (monster == null)
+        // {
+        //     return NotFound();
+        // }
 
-        var result = await _monsterService.DeleteMonsterAsync(monster);
-        if (!result)
-        {
-            TempData["ErrorMessage"] = "Unable to delete the monster. Please try again later.";
-            return View(monster);
-        }
+        // var result = await _monsterService.DeleteMonsterAsync(monster);
+        // if (!result)
+        // {
+        //     TempData["ErrorMessage"] = "Unable to delete the monster. Please try again later.";
+        //     return View(monster);
+        // }
         return RedirectToAction("Index");
     }
 }
