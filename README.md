@@ -6,4 +6,4 @@ available commands
 
 /here : displays monsters and players in the same room
 
-Try it [Here](mudgame-h7gjeqhtgqdfbccc.westus-01.azurewebsites.net)
+Try it [Here](https://mudgame-h7gjeqhtgqdfbccc.westus-01.azurewebsites.net)
